@@ -1,0 +1,39 @@
+'''
+@LastEditTime: 2020-07-29 14:50:48
+@Description: 
+使用方法：
+1.将需要转的MP4文件放到一个文件夹里面。
+2.运行程序，自动弹出对话框并选择存放文件的那个文件夹。
+3.转换好的MP3文件生成在MP4文件夹内。
+
+需要安装的库：
+tkinter
+moviepy
+'''
+
+import os
+import time
+# import tkinter as tk
+from tkinter import filedialog
+from moviepy.editor import *
+import re
+
+# 使用os模块的walk函数，搜索出指定目录下的全部mp4文件
+# 获取同一目录下的所有mp4文件的绝对路径
+def getFileName():
+    filedir = filedialog.askdirectory()
+    file_list = [os.path.join(root, filespath) \
+                 for root, dirs, files in os.walk(filedir) \
+                 for filespath in files \
+                 if str(filespath).endswith('mp4')
+                 ]
+    return file_list if file_list else []
+    
+
+if __name__ == '__main__':
+    # root = tk.Tk
+    for video_path in getFileName():
+        video = VideoFileClip(video_path)
+        audio = video.audio
+        rename = re.sub('.mp4', '', video_path)
+        audio.write_audiofile(rename + ".mp3")
